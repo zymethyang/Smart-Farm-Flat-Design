@@ -1,7 +1,6 @@
 import React from 'react';
 import {
-  StyleSheet,
-  View
+  StyleSheet
 } from 'react-native';
 import { Button, Text } from 'native-base';
 

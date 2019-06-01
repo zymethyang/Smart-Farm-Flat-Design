@@ -14,6 +14,7 @@ import InfoBox from '../components/InfoScreen/InfoBox';
 import SwitchUI from '../components/InfoScreen/SwitchUI';
 import ModeUI from '../components/InfoScreen/ModeUI';
 import { mqtt, client } from '../shared/mqtt';
+import BtnLogout from '../components/BtnLogout';
 
 export default class InfoScreen extends React.Component {
   static navigationOptions = {
@@ -29,14 +30,15 @@ export default class InfoScreen extends React.Component {
       water: 0,
       spray: false,
       mixer: false,
-      mode: 0
+      mode: 0,
+      out: false
     }
   }
 
   componentDidMount() {
     mqtt.then(() => {
       console.log('onConnect');
-      return client.subscribe('FWpfOR6wyKZIoYj');
+      return client.subscribe('FWpfOR6wyKZIoYj/fb');
     });
     client.on('connectionLost', (responseObject) => {
       if (responseObject.errorCode !== 0) {
@@ -52,6 +54,7 @@ export default class InfoScreen extends React.Component {
       data.hasOwnProperty('water') ? this.setState({ water: data.water }) : null;
       data.hasOwnProperty('spray') ? this.setState({ spray: data.spray }) : null;
       data.hasOwnProperty('mixer') ? this.setState({ mixer: data.mixer }) : null;
+      data.hasOwnProperty('out') ? this.setState({ out: data.out }) : null;
     });
     setInterval(() => {
       AsyncStorage.getItem('mode').then((value) => {
@@ -72,20 +75,22 @@ export default class InfoScreen extends React.Component {
   }
 
   render() {
-    let { ph, ec, temp, water, spray, mixer, mode } = this.state;
+    let { ph, ec, temp, water, spray, mixer, mode, out } = this.state;
     return (
       <View style={styles.container}>
         <ScrollView>
-          <NavComponent onPress={(route) => this.props.navigation.navigate(route)} />
-          <InfoBox title={"pH"} value={ph} props="" />
-          <InfoBox title={"Ec "} value={ec} props="(mS/cm): " />
-          <InfoBox title={"Nhiệt độ"} value={temp} props="(°C): " />
-          <InfoBox title={"Mực nước"} value={water} props="(%): " />
+          <NavComponent route='info' onPress={(route) => this.props.navigation.navigate(route)} />
+          <InfoBox title={"pH"} value={ph} props=" " />
+          <InfoBox title={"Ec"} value={ec} props="(mS/cm) " />
+          <InfoBox title={"Nhiệt độ"} value={temp} props="(°C) " />
+          <InfoBox title={"Mực nước"} value={water} props="(%) " />
           <View style={styles.rowsAlign}>
             <SwitchUI title={"Máy phun sương"} value={spray} />
             <SwitchUI title={"Máy trộn"} value={mixer} />
+            <SwitchUI title={"Hệ thống làm mát"} value={out} />
             <ModeUI title={"Chế độ"} value={mode} />
           </View>
+          <BtnLogout />
         </ScrollView>
         <Footer />
       </View>

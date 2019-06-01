@@ -1,15 +1,43 @@
 import React from 'react';
-import { Platform, StatusBar, StyleSheet, View } from 'react-native';
+import { Platform, StatusBar, StyleSheet, View, ActivityIndicator, Text } from 'react-native';
+
 import { AppLoading, Asset, Font, Icon } from 'expo';
 import MainTabNavigator from './navigation/MainTabNavigator';
 import Header from './components/Header';
+import LoginScreen from './screens/LoginScreen';
+import firebase from './shared/firebase';
+import 'firebase/auth';
+
+const LoadingComponent = () => {
+  return (
+    <View style={styles.loadingContainer}>
+      <ActivityIndicator size="large" color="#00bfa5" />
+      <Text style={styles.loadingStyle}>Loading...</Text>
+    </View>
+  );
+}
 
 export default class App extends React.Component {
   state = {
     isLoadingComplete: false,
+    login: null
   };
 
+
+  componentDidMount() {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        console.log('Logged');
+        this.setState({ login: true });
+      } else {
+        console.log('Sign out');
+        this.setState({ login: false });
+      }
+    });
+  }
+
   render() {
+    const { login } = this.state;
     if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
       return (
         <AppLoading
@@ -22,8 +50,16 @@ export default class App extends React.Component {
       return (
         <View style={styles.container}>
           {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-          <Header />
-          <MainTabNavigator />
+          {
+            login === null ?
+              <LoadingComponent /> :
+              login === false ?
+                <LoginScreen /> :
+                <View style={{ flex: 1 }}>
+                  <Header />
+                  <MainTabNavigator />
+                </View>
+          }
         </View>
       );
     }
@@ -63,5 +99,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center'
+  },
+  loadingStyle: {
+    textAlign: 'center',
+    color: '#00bfa5'
   },
 });

@@ -14,7 +14,7 @@ export default class SwitchUI extends React.Component {
           <Text style={styles.textStyle}>{title}</Text>
         </View>
         <View style={styles.wrapNumber}>
-          <Text style={styles.textStyle}>{value ? ': ON' : ': OFF'}</Text>
+          <Text style={styles.textNumber}>{value ? ': ON' : ': OFF'}</Text>
         </View>
       </View>
     );
@@ -33,10 +33,17 @@ const styles = StyleSheet.create({
   wrapNumber: {
     alignSelf: 'center',
     marginLeft: 10,
+    position: 'absolute',
+    right: 40
   },
   textStyle: {
     fontSize: 25,
     fontFamily: 'cereal-medium',
     color: '#9e9e9e'
+  },
+  textNumber: {
+    fontSize: 25,
+    fontFamily: 'cereal-medium',
+    color: '#00bfa5'
   }
 });

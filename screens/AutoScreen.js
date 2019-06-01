@@ -89,7 +89,7 @@ export default class AutoScreen extends React.Component {
     return (
       <View style={styles.container}>
         <ScrollView>
-          <NavComponent onPress={(route) => this.props.navigation.navigate(route)} />
+          <NavComponent route='auto' onPress={(route) => this.props.navigation.navigate(route)} />
           <View style={styles.wrapShadow}>
             <View style={{ flexDirection: 'row' }}>
               <ImageSection source={image} />

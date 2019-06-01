@@ -14,7 +14,7 @@ export default class InfoBox extends React.Component {
           <Text style={styles.textStyle}>{title} {props}</Text>
         </View>
         <View style={styles.wrapNumber}>
-          <Text style={styles.textNumber}>{value}</Text>
+          <Text style={styles.textNumber}>{': '}{value}</Text>
         </View>
       </View>
     );
@@ -33,6 +33,8 @@ const styles = StyleSheet.create({
   wrapNumber: {
     alignSelf: 'center',
     marginLeft: 10,
+    position: 'absolute',
+    right: 70
   },
   textStyle: {
     fontSize: 25,

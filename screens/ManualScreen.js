@@ -8,7 +8,6 @@ import {
 
 import SetupText from '../components/ManualScreen/SetupText';
 import SetupTextDouble from '../components/ManualScreen/SetupTextDouble';
-import SetupSwitch from '../components/ManualScreen/SetupSwitch';
 import BtnSave from '../components/ManualScreen/BtnSave';
 
 import NavComponent from '../components/NavComponent';
@@ -50,18 +49,25 @@ export default class ManualScreen extends React.Component {
     client.send(message);
 
     AsyncStorage.setItem('mode', JSON.stringify({ mode: 2 }));
+    AsyncStorage.setItem('setting', JSON.stringify(this.state));
+  }
+
+  componentDidMount() {
+    AsyncStorage.getItem('setting').then((data) => {
+      const jsonData = JSON.parse(data);
+      this.setState(jsonData);
+    });
   }
 
   render() {
-    let { ph_min, ph_max, ec_min, ec_max, on, off, spray_outside } = this.state;
+    let { ph_min, ph_max, ec_min, ec_max, on, off } = this.state;
     return (
       <View style={styles.container}>
         <ScrollView>
-          <NavComponent onPress={(route) => this.props.navigation.navigate(route)} />
+          <NavComponent route='manual' onPress={(route) => this.props.navigation.navigate(route)} />
           <SetupText title="Set pH" type="ph" value={{ min: ph_min, max: ph_max }} onChangeText={({ type, value }) => this.setState({ [type]: value })} />
           <SetupText title="Set EC" type="ec" value={{ min: ec_min, max: ec_max }} onChangeText={({ type, value }) => this.setState({ [type]: value })} />
           <SetupTextDouble value={{ on: on, off: off }} onChangeText={({ type, value }) => this.setState({ [type]: value })} />
-          <SetupSwitch value={spray_outside} onValueChange={({ type, value }) => this.setState({ [type]: value })} />
           <BtnSave onPress={() => this.sendCloud(this.state)} />
         </ScrollView>
         <Footer />
