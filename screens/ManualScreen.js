@@ -15,6 +15,7 @@ import Footer from '../components/Footer';
 
 import { client } from '../shared/mqtt';
 import { Message } from 'react-native-paho-mqtt';
+import axios from 'axios';
 
 export default class ManualScreen extends React.Component {
   static navigationOptions = {
@@ -44,12 +45,24 @@ export default class ManualScreen extends React.Component {
       off: parseFloat(off),
       spray_outside
     });
+
     const message = new Message(dataBuffer);
     message.destinationName = 'FWpfOR6wyKZIoYj';
     client.send(message);
 
     AsyncStorage.setItem('mode', JSON.stringify({ mode: 2 }));
     AsyncStorage.setItem('setting', JSON.stringify(this.state));
+
+    axios.post('http://data.solavo.net:6093/range/set', {
+      minPh: parseFloat(ph_min),
+      maxPh: parseFloat(ph_max),
+      minEc: parseFloat(ec_min),
+      maxEc: parseFloat(ec_max)
+    }).then(() => {
+      console.log("Saved!");
+    }).catch((error) => {
+      console.log(error);
+    })
   }
 
   componentDidMount() {

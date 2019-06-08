@@ -15,6 +15,8 @@ import Footer from '../components/Footer';
 
 import { client } from '../shared/mqtt';
 import { Message } from 'react-native-paho-mqtt';
+import axios from 'axios';
+
 
 export default class AutoScreen extends React.Component {
   static navigationOptions = {
@@ -52,6 +54,16 @@ export default class AutoScreen extends React.Component {
           on: 180,
           off: 60
         });
+        axios.post('http://data.solavo.net:6093/range/set', {
+          minPh: params.phMin,
+          maxPh: params.phMax,
+          minEc: params.ecMin,
+          maxEc: params.ecMax
+        }).then(() => {
+          console.log("Saved!");
+        }).catch((error) => {
+          console.log(error);
+        })
       }
     })
   }
